@@ -47,6 +47,7 @@ h1, h3, h5 {
   max-height: 400px;
   text-align: justify;
   vertical-align: middle;
+  z-index: 1;
 }
 
 .col-md-4 > img {

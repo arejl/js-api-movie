@@ -1,32 +1,53 @@
+//Retrieving an API Key for access
+
 const apiKey = prompt("Entre ta clé d'API :");
 
-let observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-		console.log(entry.target);
-    console.log(entry.isIntersecting);
-	})
-});
+//Creation of the observer
 
-const findMovie = () => {
-  let search = document.getElementById("searched_movie").value
-  fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${search}&type=movie`)
-  .then(response => response.json())
-  .then(data => {displayResults(data.Search)});
+let options = {
+  rootMargin: '0px',
+  threshold: [0, 0.25, 0.5, 0.75, 1]
 }
 
-const displayResults = (results) => {
-  let n = 1;
-  document.getElementById("movie_list").innerHTML = "";
-  results.forEach(movie => {
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&t=${movie.Title}`)
-    .then(response => response.json())
-      .then(data => {
-        document.getElementById("movie_list").innerHTML += movieCard(data,n);
-        observer.observe(document.getElementById(`${n}`));
-        n++;
-      });
+const intersectionCallback = (entries) => {
+  entries.forEach(entry => {
+    if (entry.intersectionRatio ===  0) {
+      entry.target.style.opacity="0";
+    } else if (entry.intersectionRatio > 0 && entry.intersectionRatio < 0.25) {
+      entry.target.style.opacity="0.25";
+    } else if (entry.intersectionRatio >= 0.25 && entry.intersectionRatio < 0.5) {
+      entry.target.style.opacity="0.5";
+    } else if (entry.intersectionRatio >= 0.5 && entry.intersectionRatio < 0.75) {
+      entry.target.style.opacity="0.75";
+    } else if (entry.intersectionRatio >= 0.75) {
+      entry.target.style.opacity="1";
+    }
+  });
+};
+
+let observer = new IntersectionObserver(intersectionCallback, options);
+
+//Search database for movie and display results
+
+const findMovie = async () => {
+  let search = document.getElementById("searched_movie").value;
+  const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${search}&type=movie`);
+  const data = await response.json();
+  displayResults(data.Search);
+  console.log(data.Search);
+
+  let allMovies = document.getElementsByClassName('card');
+  Array.from(allMovies).forEach(movie => {
+    observer.observe(movie);
   });
 }
+
+const displayResults = (movies) => {
+  document.getElementById("movie_list").innerHTML = '';
+  return movies.map((movie, index) => {
+    document.getElementById("movie_list").innerHTML += movieCard(movie, index);
+  });
+};
 
 const movieCard = (movie, n) => {
   let card = `  <div id="${n}" class="card my-3">
@@ -37,7 +58,7 @@ const movieCard = (movie, n) => {
                     <div class="col-md-10">
                       <div class="card-body">
                         <h5 class="card-title">${movie.Title}</h5>
-                        <p class="card-text">${movie.Released}</p>
+                        <p class="card-text">${movie.Year}</p>
                         <button class="btn btn-primary" onclick="{detailedMovie('${movie.imdbID}')}">En voir plus</button>
                       </div>
                     </div>
@@ -45,6 +66,16 @@ const movieCard = (movie, n) => {
                 </div>`;
   return card
 }
+
+//Popup with movie details
+
+const detailedMovie = async (movie) => {
+  document.getElementById("overlay").classList.remove("hidden");
+  const detailedresponse = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}&i=${movie}`);
+  const detaileddata = await detailedresponse.json();
+  document.getElementById("popup").innerHTML = detailedCard(detaileddata);
+}
+
 
 const detailedCard = (movie) => {
   let card = `<div class="row" style="height:100%">
@@ -64,15 +95,6 @@ const detailedCard = (movie) => {
               </div>
             `;
   return card
-}
-
-const detailedMovie = (movie) => {
-  document.getElementById("overlay").classList.remove("hidden");
-  fetch(`https://www.omdbapi.com/?apikey=${apiKey}&i=${movie}`)
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById("popup").innerHTML = detailedCard(data);
-    });
 }
  
 const hidePopup = () => {
