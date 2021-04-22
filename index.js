@@ -14,7 +14,7 @@
 
 const findMovie = () => {
   let search = document.getElementById("searched_movie").value
-  fetch(`http://www.omdbapi.com/?apikey=43beada2&s=${search}&type=movie`)
+  fetch(`https://www.omdbapi.com/?apikey=43beada2&s=${search}&type=movie`)
   .then(response => response.json())
   .then(data => {displayResults(data.Search)});
 }
@@ -23,7 +23,7 @@ const displayResults = (results) => {
   let n = 1;
   document.getElementById("movie_list").innerHTML = "";
   results.forEach(movie => {
-    fetch(`http://www.omdbapi.com/?apikey=43beada2&t=${movie.Title}`)
+    fetch(`https://www.omdbapi.com/?apikey=43beada2&t=${movie.Title}`)
     .then(response => response.json())
       .then(data => {
         document.getElementById("movie_list").innerHTML += movieCard(data,n);
@@ -73,7 +73,7 @@ const detailedCard = (movie) => {
 
 const detailedMovie = (movie) => {
   document.getElementById("overlay").classList.remove("hidden");
-  fetch(`http://www.omdbapi.com/?apikey=43beada2&i=${movie}`)
+  fetch(`https://www.omdbapi.com/?apikey=43beada2&i=${movie}`)
     .then(response => response.json())
     .then(data => {
       document.getElementById("popup").innerHTML = detailedCard(data);
