@@ -1,1 +1,2 @@
 * GitHub Pages link: https://arejl.github.io/js-api-movie/
+* Enter your OMDb API Key in the prompt, or the website will not work. If you enter an incorrect value, refresh the page for the prompt to reappear.

@@ -34,7 +34,6 @@ const findMovie = async () => {
   const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${search}&type=movie`);
   const data = await response.json();
   displayResults(data.Search);
-  console.log(data.Search);
 
   let allMovies = document.getElementsByClassName('card');
   Array.from(allMovies).forEach(movie => {
