@@ -1,20 +1,15 @@
-// let observer = new IntersectionObserver((entries) => {
-//   entries.forEach((entry) => {
-// 		console.log(entry.target);
-//     console.log(entry.isIntersecting)
-// 	})
-// });
+const apiKey = prompt("Entre ta clé d'API :");
 
-// document.addEventListener("load", function (event) {
-//   if(event.target && event.target.classList.contains("card")){
-//     console.log(event.target);
-//     console.log(event.isIntersecting)
-//   }  
-// });
+let observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+		console.log(entry.target);
+    console.log(entry.isIntersecting);
+	})
+});
 
 const findMovie = () => {
   let search = document.getElementById("searched_movie").value
-  fetch(`https://www.omdbapi.com/?apikey=43beada2&s=${search}&type=movie`)
+  fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${search}&type=movie`)
   .then(response => response.json())
   .then(data => {displayResults(data.Search)});
 }
@@ -23,11 +18,11 @@ const displayResults = (results) => {
   let n = 1;
   document.getElementById("movie_list").innerHTML = "";
   results.forEach(movie => {
-    fetch(`https://www.omdbapi.com/?apikey=43beada2&t=${movie.Title}`)
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&t=${movie.Title}`)
     .then(response => response.json())
       .then(data => {
         document.getElementById("movie_list").innerHTML += movieCard(data,n);
-        // observer.observe(document.getElementById(`${n}`))
+        observer.observe(document.getElementById(`${n}`));
         n++;
       });
   });
@@ -73,7 +68,7 @@ const detailedCard = (movie) => {
 
 const detailedMovie = (movie) => {
   document.getElementById("overlay").classList.remove("hidden");
-  fetch(`https://www.omdbapi.com/?apikey=43beada2&i=${movie}`)
+  fetch(`https://www.omdbapi.com/?apikey=${apiKey}&i=${movie}`)
     .then(response => response.json())
     .then(data => {
       document.getElementById("popup").innerHTML = detailedCard(data);

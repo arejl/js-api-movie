@@ -48,3 +48,7 @@ h1, h3, h5 {
   text-align: justify;
   vertical-align: middle;
 }
+
+.col-md-4 > img {
+  height: 380px;
+}
