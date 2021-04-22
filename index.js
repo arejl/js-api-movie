@@ -1,21 +1,40 @@
+// let observer = new IntersectionObserver((entries) => {
+//   entries.forEach((entry) => {
+// 		console.log(entry.target);
+//     console.log(entry.isIntersecting)
+// 	})
+// });
+
+// document.addEventListener("load", function (event) {
+//   if(event.target && event.target.classList.contains("card")){
+//     console.log(event.target);
+//     console.log(event.isIntersecting)
+//   }  
+// });
+
 const findMovie = () => {
   let search = document.getElementById("searched_movie").value
-  fetch(`http://www.omdbapi.com/?apikey=${APIKEY}&s=${search}&type=movie`)
+  fetch(`http://www.omdbapi.com/?apikey=43beada2&s=${search}&type=movie`)
   .then(response => response.json())
-  .then(data => displayResults(data.Search));
+  .then(data => {displayResults(data.Search)});
 }
 
 const displayResults = (results) => {
+  let n = 1;
   document.getElementById("movie_list").innerHTML = "";
   results.forEach(movie => {
-    fetch(`http://www.omdbapi.com/?apikey=${APIKEY}&t=${movie.Title}`)
+    fetch(`http://www.omdbapi.com/?apikey=43beada2&t=${movie.Title}`)
     .then(response => response.json())
-    .then(data => document.getElementById("movie_list").innerHTML += movieCard(data));
+      .then(data => {
+        document.getElementById("movie_list").innerHTML += movieCard(data,n);
+        // observer.observe(document.getElementById(`${n}`))
+        n++;
+      });
   });
 }
 
-const movieCard = (movie) => {
-  let card = `  <div class="card my-3">
+const movieCard = (movie, n) => {
+  let card = `  <div id="${n}" class="card my-3">
                   <div class="row">
                     <div class="col-md-2">
                       <img class="card-img-top mx-auto p-2" src="${movie.Poster}" alt="Pas d'affiche disponible">
@@ -44,8 +63,8 @@ const detailedCard = (movie) => {
                     <p class="card-text">${movie.Plot}</p>
                   </div>
                 </div>
-                <div class="col-md-1 text-right">
-                  <button class='btn btn-danger' onclick='hidePopup()'>x</button>
+                <div class="col-md-1 p-2 text-right">
+                  <button class='btn btn-danger' onclick='hidePopup()'>&times;</button>
                 </div>
               </div>
             `;
@@ -54,7 +73,7 @@ const detailedCard = (movie) => {
 
 const detailedMovie = (movie) => {
   document.getElementById("overlay").classList.remove("hidden");
-  fetch(`http://www.omdbapi.com/?apikey=${APIKEY}&t=${movie}`)
+  fetch(`http://www.omdbapi.com/?apikey=43beada2&t=${movie}`)
     .then(response => response.json())
     .then(data => {
       document.getElementById("popup").innerHTML = "" + detailedCard(data);
@@ -63,6 +82,5 @@ const detailedMovie = (movie) => {
  
 const hidePopup = () => {
   document.getElementById("overlay").classList.add("hidden");
-  document.getElementById("movie_title").innerHTML = "";
-  document.getElementById("movie_description").innerHTML = "";
+  document.getElementById("popup").innerHTML = "";
 }
