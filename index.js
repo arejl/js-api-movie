@@ -43,7 +43,7 @@ const movieCard = (movie, n) => {
                       <div class="card-body">
                         <h5 class="card-title">${movie.Title}</h5>
                         <p class="card-text">${movie.Released}</p>
-                        <button class="btn btn-primary" onclick="{detailedMovie('${movie.Title}')}">En voir plus</button>
+                        <button class="btn btn-primary" onclick="{detailedMovie('${movie.imdbID}')}">En voir plus</button>
                       </div>
                     </div>
                   </div>
@@ -73,10 +73,10 @@ const detailedCard = (movie) => {
 
 const detailedMovie = (movie) => {
   document.getElementById("overlay").classList.remove("hidden");
-  fetch(`http://www.omdbapi.com/?apikey=43beada2&t=${movie}`)
+  fetch(`http://www.omdbapi.com/?apikey=43beada2&i=${movie}`)
     .then(response => response.json())
     .then(data => {
-      document.getElementById("popup").innerHTML = "" + detailedCard(data);
+      document.getElementById("popup").innerHTML = detailedCard(data);
     });
 }
  
